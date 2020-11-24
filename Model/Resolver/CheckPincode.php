@@ -27,7 +27,7 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Lof\PincodeChecker\Api\PincodecheckerRepositoryInterface;
-
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 /**
  * Class CheckPincode
  * @package Lof\PincodeCheckerGraphQl\Model\Resolver
@@ -48,7 +48,7 @@ class CheckPincode implements ResolverInterface
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         $this->validateArgs($args);
-        $result = $this->_pincodecheckeRepository->checkPincode($args['input']['sku'],$args['input']['pincode']);
+        $result = $this->_pincodecheckeRepository->checkPincode($args['sku'],$args['pincode']);
         return $result;
     }
     /**
@@ -58,15 +58,11 @@ class CheckPincode implements ResolverInterface
      */
     public function validateArgs($args)
     {
-        if (!isset($args['input'])) {
-            throw new GraphQlInputException(__('Required parameter "input" is missing'));
-        }
-        
-        if (!isset($args['input']['sku'])) {
+        if (!isset($args['sku'])) {
             throw new GraphQlInputException(__('Required parameter "sku" is missing'));
         }
 
-        if (!isset($args['input']['pincode'])) {
+        if (!isset($args['pincode'])) {
             throw new GraphQlInputException(__('Required parameter "pincode" is missing'));
         }
     }
